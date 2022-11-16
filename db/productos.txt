@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Regla",
+    "price": 500,
+    "thumbnail": "./regla.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Birome",
+    "price": 460,
+    "thumbnail": "./birome.jpg"
+  },
+  {
+    "id": 3,
+    "title": "Mochila",
+    "price": 2642,
+    "thumbnail": "./mochila.jpg"
+  },
+  {
+    "id": 4,
+    "title": "Libro",
+    "price": 1030,
+    "thumbnail": "./libro.jpg"
+  }
+]
