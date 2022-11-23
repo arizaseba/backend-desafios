@@ -22,5 +22,17 @@
     "title": "Libro",
     "price": 1030,
     "thumbnail": "./libro.jpg"
+  },
+  {
+    "id": 5,
+    "title": "Lápiz",
+    "price": 150,
+    "thumbnail": "./lapiz.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Calculadora",
+    "price": 6548,
+    "thumbnail": "./calculadora.jpg"
   }
 ]

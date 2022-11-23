@@ -15,21 +15,21 @@ export default class Contenedor {
         let id;
 
         if (list.length > 0 && list.some((s) => s.title === obj.title)) {
-            console.log("El producto ya se encuentra en el catálogo");
-            return
+            return console.log("El producto ya se encuentra en el catálogo");
         }
 
         if (list.length == 0) {
             id = 1
         }
         else {
+            list.sort((a, b) => { return a.id - b.id })
             id = list[list.length - 1].id + 1
         }
 
         // asigno nuevo id
         const newObj = { id: id, ...obj }
         // agrego al listado
-        list.push(newObj)
+        list.push(newObj);
 
         try {
             await fs.promises.writeFile(this.fileName, JSON.stringify(list, null, 2))
@@ -38,6 +38,32 @@ export default class Contenedor {
         catch (err) {
             throw new Error(`Error al guardar un nuevo objeto: ${err}`)
         }
+    }
+
+    // modificar elemento
+    async saveById(obj) {
+        const list = await this.getAll()
+        const prodToUpdate = list.find(item => item.id === obj.id)
+
+        if (prodToUpdate) {
+            let id = prodToUpdate.id
+            await this.deleteById(id)
+            const newList = list.filter(item => item.id !== id)
+            const newObj = { id: id, ...obj }
+            // agrego al listado
+            newList.push(newObj)
+            newList.sort((a, b) => { return a.id - b.id })
+
+            try {
+                await fs.promises.writeFile(this.fileName, JSON.stringify(newList, null, 2))
+                return id
+            }
+            catch (err) {
+                throw new Error(`Error al guardar un nuevo objeto: ${err}`)
+            }
+        }
+        else
+            throw new Error(`Error al guardar un nuevo objeto: ${err}`)
     }
 
     // obtener elemento
@@ -66,9 +92,11 @@ export default class Contenedor {
     // eliminar elemento por id
     async deleteById(id) {
         const list = await this.getAll()
+        const prodToDelete = await this.getById(id)
         const newList = list.filter(item => item.id !== id)
         try {
             await fs.promises.writeFile(this.fileName, JSON.stringify(newList, null, 2))
+            return prodToDelete
         }
         catch (err) {
             throw new Error(`No se pudo borrar la data: ${err}`)
