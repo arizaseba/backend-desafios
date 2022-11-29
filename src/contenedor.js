@@ -1,6 +1,6 @@
 import fs from "fs"
 
-export default class Contenedor {
+class Contenedor {
     // constructor que recibe nombre del archivo
     constructor(fileName) {
         this.fileName = fileName
@@ -113,3 +113,6 @@ export default class Contenedor {
         }
     }
 }
+
+const contenedor = new Contenedor("./db/productos.txt")
+export default contenedor;
