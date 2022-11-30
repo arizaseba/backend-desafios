@@ -10,20 +10,23 @@ router
     // GET /api/productos
     .get(async (req, res) => {
         const products = await productDb.getAll()
-        res.json(products)
+        // res.json(products)
+        res.render("products.ejs", { products })
     })
     // POST api/productos
-    .post(uploadFileMiddleware.single("productImage"), async (req, res) => {
+    .post(uploadFileMiddleware.single("thumbnail"), async (req, res) => {
         const { title, price } = req.body;
-        const image = req.file;
-        const prodNew = new Producto(title, price, `http://localhost:8080/images/${image.originalname}`);
+        const thumbnail = req.file;
+        const prodNew = new Producto(title, price, `http://localhost:8080/images/${thumbnail.originalname}`);
         const prodNewId = await productDb.save(prodNew);
 
         const prodByID = await productDb.getById(prodNewId);
         const response = prodByID
             ? { status: "Producto agregado correctamente", code: 201, data: prodByID }
             : { status: "No se pudo agregar el producto", code: 404, data: null };
-        res.status(response.code).send(response);
+
+        // res.status(response.code).send(response);
+        res.status(response.code).redirect("/")
     });
 
 router

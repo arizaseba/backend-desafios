@@ -1,6 +1,6 @@
 import express, { json, urlencoded } from "express";
 import productRouter from "./routes/product.route.js"
-import baseRouter from "./routes/base.route.js"
+import index from "./routes/index.js"
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import path from "path";
@@ -12,15 +12,22 @@ const app = express();
 
 app.use(json());
 app.use(urlencoded({ extended: true }));
+
+// multer
 app.use("/images", express.static(path.join(__dirname, "/uploads")));
+
+// ejs
+app.set("view engine", "ejs")
+app.set("views", __dirname + "/views")
 
 app.use((req, res, next) => {
     console.log(`X ${req.method} - ${req.path}`);
     next();
 })
 
+// routes
 app.use("/api/productos", productRouter)
-app.use("/", baseRouter)
+app.use("/", index)
 
 app.listen(8080, (error) => {
     error
