@@ -12,7 +12,7 @@
 
 <body>
     <div class="container p-4">
-        <button id="frmButton" class="btn btn-success mb-4">Ver productos</button>
+        <button id="frmButton" class="btn btn-success">Ver productos</button>
     </div>
 
     <div class="container p-4 bg-light shadow">
@@ -65,8 +65,16 @@
         </form>
     </div>
 
+    <script>
+        const frmButton = document.getElementById("frmButton")
+        frmButton.addEventListener("click", event => {
+            window.location = "/api/productos"
+        })
+    </script>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="./client.socket.js"></script>
+
 </body>
 
 </html>

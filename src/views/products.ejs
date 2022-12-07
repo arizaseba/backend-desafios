@@ -12,12 +12,15 @@
 
 <body>
     <div class="container p-4">
-        <button id="frmButton" class="btn btn-primary mb-4">Agregar producto</button>
+        <button id="frmButton" class="btn btn-success">Agregar producto</button>
+    </div>
+
+    <div class="container p-4">
         <h1 class="text-center display-4">Productos</h1>
         <div class="row g-4">
             <% products.forEach(product=> {{ %>
                 <div class="col-md-4 col-xs-1">
-                    <div class="card">
+                    <div class="card shadow">
                         <img class="card-img-top" src="<%=product.thumbnail%>" alt="<%=product.title%>">
                         <div class="card-body">
                             <h4 class="card-title">
