@@ -12,31 +12,61 @@
 
 <body>
     <div class="container p-4">
-        <button id="frmButton" class="btn btn-primary mb-4">Ver productos</button>
+        <button id="frmButton" class="btn btn-success mb-4">Ver productos</button>
+    </div>
+
+    <div class="container p-4 bg-light shadow">
         <h1 class="text-center display-4">Agregar Producto</h1>
-        <form action="/api/productos" enctype="multipart/form-data" method="post">
+        <form id="productForm" action="/api/productos" enctype="multipart/form-data" method="post">
             <div class="mb-3">
                 <label for="" class="form-label">Título</label>
-                <input type="text" class="form-control" name="title" required>
+                <input id="titleInput" type="text" class="form-control" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="" class="form-label">Precio</label>
-                <input type="number" class="form-control" name="price" required>
+                <input id="priceInput" type="number" class="form-control" name="price" required>
             </div>
             <div class="mb-3">
                 <label for="" class="form-label">Foto</label>
-                <input type="file" class="form-control" name="thumbnail" required>
+                <input id="thumbnailInput" type="file" class="form-control" name="thumbnail" required>
             </div>
             <input type="submit" class="btn btn-primary" value="Agregar">
         </form>
     </div>
 
-    <script>
-        const frmButton = document.getElementById("frmButton")
-        frmButton.addEventListener("click", event => {
-            window.location = "/api/productos"
-        })
-    </script>
+    <div class="container my-3 p-4">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Título</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Thumbnail</th>
+                    </tr>
+                </thead>
+                <tbody id="productsPool"> </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container my-3 p-4 bg-light shadow">
+        <h1 class="text-center display-4">Centro de mensajes</h1>
+        <form id="msgForm" action="/api/productos" enctype="multipart/form-data" method="post">
+            <div class="mb-3">
+                <label for="" class="form-label">Email</label>
+                <input id="emailInput" type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3" id="msgPool"></div>
+            <div class="mb-3">
+                <label for="" class="form-label">Mensaje</label>
+                <input id="msgInput" type="text" class="form-control" name="msg" required>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Enviar">
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./client.socket.js"></script>
 </body>
 
 </html>
