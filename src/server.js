@@ -8,6 +8,8 @@ import { Server as IOServer } from "socket.io";
 import productDb from "./repository/ProductoRepository.js"
 import msgDB from "./repository/MensajeRepository.js"
 
+const PORT = process.env.PORT || 8080;
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -32,10 +34,10 @@ app.use((req, res, next) => {
 app.use("/api/productos", productRouter)
 app.use("/", index)
 
-const expressServer = app.listen(8080, (error) => {
+const expressServer = app.listen(PORT, (error) => {
     error
         ? console.log("Error al iniciar la app", error)
-        : console.log("Servidor escuchando puerto 8080");
+        : console.log(`Servidor escuchando puerto ${PORT}`);
 });
 
 const io = new IOServer(expressServer);
