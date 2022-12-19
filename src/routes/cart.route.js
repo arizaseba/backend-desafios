@@ -1,8 +1,8 @@
 import { Router } from "express";
 import checkIfAdminMiddleware from "../libs/auth.js";
-import Carrito from "../models/Carrito.js";
-import carritoDb from "../repositories/CarritoRepository.js"
-import productDb from "../repositories/ProductoRepository.js"
+import Cart from "../models/Cart.js";
+import carritoDb from "../repositories/CartRepository.js"
+import productDb from "../repositories/ProductRepository.js"
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router
     })
     // POST api/carrito
     .post(checkIfAdminMiddleware, async (req, res) => {
-        const carritoNewId = await carritoDb.save(new Carrito());
+        const carritoNewId = await carritoDb.save(new Cart());
         res.json(carritoNewId)
     });
 

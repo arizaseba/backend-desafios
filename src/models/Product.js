@@ -1,4 +1,4 @@
-export default class Producto {
+export default class Product {
     constructor
         (
             nombre = new String(),

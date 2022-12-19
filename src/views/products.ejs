@@ -54,7 +54,7 @@
                             <th scope="col">Precio</th>
                             <th scope="col">Thumbnail</th>
                         </tr>
-                        <% products.forEach(p=> {{ %>
+                        <% products.map(p=> {{ %>
                             <tr>
                                 <td><%-p.nombre%></td>
                                 <td><%-p.precio%></td>

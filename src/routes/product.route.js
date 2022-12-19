@@ -1,6 +1,6 @@
 import { Router } from "express";
-import Producto from "../models/Producto.js";
-import productDb from "../repositories/ProductoRepository.js"
+import Product from "../models/Product.js";
+import productDb from "../repositories/ProductRepository.js"
 import uploadFileMiddleware from "../libs/multer.js";
 import checkIfAdminMiddleware from "../libs/auth.js";
 
@@ -18,7 +18,7 @@ router
     .post(uploadFileMiddleware.single("foto"), checkIfAdminMiddleware, async (req, res) => {
         const { nombre, desc, codigo, precio, stock } = req.body;
         const foto = req.file.originalname;
-        const prodNew = new Producto(nombre, desc, codigo, `http://localhost:8080/images/${foto}`, precio, stock);
+        const prodNew = new Product(nombre, desc, codigo, `http://localhost:8080/images/${foto}`, precio, stock);
         const prodNewId = await productDb.save(prodNew);
 
         const prodByID = await productDb.getById(prodNewId);

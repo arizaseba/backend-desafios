@@ -1,12 +1,12 @@
 import express, { json, urlencoded } from "express";
 import productRoute from "./routes/product.route.js"
 import indexRoute from "./routes/index.route.js"
-import carritoRoute from "./routes/carrito.route.js"
+import cartRoute from "./routes/cart.route.js"
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import path from "path";
 import { Server as IOServer } from "socket.io";
-import msgDB from './repositories/MensajeRepository.js'
+import messageDB from './repositories/MessageRepository.js'
 
 // settings
 const app = express();
@@ -22,7 +22,7 @@ app.use("/images", express.static(path.join(__dirname, "/uploads")));
 
 // routes
 app.use("/api/productos", productRoute)
-app.use("/api/carrito", carritoRoute)
+app.use("/api/carrito", cartRoute)
 app.get("/", indexRoute)
 
 // ejs
@@ -49,11 +49,11 @@ io.on("connection", async (socket) => {
     console.log(`New connection, socket ID: ${socket.id}`);
 
     // mensajes
-    const msgs = await msgDB.getAll();
+    const msgs = await messageDB.getAll();
     socket.emit("server:msg", msgs);
 
     socket.on("client:msg", (msgInfo) => {
-        msgDB.save(msgInfo)
+        messageDB.save(msgInfo)
         msgs.push(msgInfo)
         io.emit("server:msg", msgs);
     });
