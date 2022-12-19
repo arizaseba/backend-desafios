@@ -1,25 +1,29 @@
 import express, { json, urlencoded } from "express";
-import productRouter from "./routes/product.route.js"
-import index from "./routes/index.js"
+import productRoute from "./routes/product.route.js"
+import indexRoute from "./routes/index.route.js"
+import carritoRoute from "./routes/carrito.route.js"
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import path from "path";
 import { Server as IOServer } from "socket.io";
-import productDb from "./repository/ProductoRepository.js"
-import msgDB from "./repository/MensajeRepository.js"
+import msgDB from './repositories/MensajeRepository.js'
 
+// settings
+const app = express();
 const PORT = process.env.PORT || 8080;
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const app = express();
-
+// middlewares
 app.use(json());
 app.use(urlencoded({ extended: true }));
-
-// multer
 app.use("/images", express.static(path.join(__dirname, "/uploads")));
+
+// routes
+app.use("/api/productos", productRoute)
+app.use("/api/carrito", carritoRoute)
+app.get("/", indexRoute)
 
 // ejs
 app.set("view engine", "ejs")
@@ -30,14 +34,11 @@ app.use((req, res, next) => {
     next();
 })
 
-// routes
-app.use("/api/productos", productRouter)
-app.use("/", index)
-
+// listener
 const expressServer = app.listen(PORT, (error) => {
     error
         ? console.log("Error al iniciar la app", error)
-        : console.log(`Servidor escuchando puerto ${PORT}`);
+        : console.log("Servidor escuchando puerto 8080");
 });
 
 const io = new IOServer(expressServer);
@@ -46,16 +47,6 @@ app.use(express.static(__dirname + "/public"));
 
 io.on("connection", async (socket) => {
     console.log(`New connection, socket ID: ${socket.id}`);
-
-    // productos
-    const products = await productDb.getAll();
-    socket.emit("server:product", products);
-
-    socket.on("client:product", (productInfo) => {
-        productDb.save(productInfo)
-        products.push(productInfo)
-        io.emit("server:product", products);
-    });
 
     // mensajes
     const msgs = await msgDB.getAll();
@@ -67,4 +58,3 @@ io.on("connection", async (socket) => {
         io.emit("server:msg", msgs);
     });
 });
-

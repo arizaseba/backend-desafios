@@ -1,7 +1,8 @@
 import { Router } from "express";
-import Producto from "../model/Producto.js";
-import productDb from "../repository/ProductoRepository.js"
+import Producto from "../models/Producto.js";
+import productDb from "../repositories/ProductoRepository.js"
 import uploadFileMiddleware from "../libs/multer.js";
+import checkIfAdminMiddleware from "../libs/auth.js";
 
 const router = Router();
 
@@ -14,10 +15,10 @@ router
         res.render("products.ejs", { products })
     })
     // POST api/productos
-    .post(uploadFileMiddleware.single("thumbnail"), async (req, res) => {
-        const { title, price } = req.body;
-        const thumbnail = req.file;
-        const prodNew = new Producto(title, price, `http://localhost:8080/images/${thumbnail.originalname}`);
+    .post(uploadFileMiddleware.single("foto"), checkIfAdminMiddleware, async (req, res) => {
+        const { nombre, desc, codigo, precio, stock } = req.body;
+        const foto = req.file.originalname;
+        const prodNew = new Producto(nombre, desc, codigo, `http://localhost:8080/images/${foto}`, precio, stock);
         const prodNewId = await productDb.save(prodNew);
 
         const prodByID = await productDb.getById(prodNewId);
@@ -35,39 +36,41 @@ router
     .get(async (req, res) => {
         const { id } = req.params;
         const prodByID = await productDb.getById(Number(id))
-
         const response = prodByID
             ? { status: "Ok", code: 200, data: prodByID }
-            : { status: "Producto no encontrado", code: 404, data: null };
-        res.status(response.code).send(response);
+            : { status: "Producto no encontrado", code: 404, data: prodByID };
+        res.status(response.code).json(response);
     })
     // PUT api/productos/:id
-    .put(async (req, res) => {
+    .put(checkIfAdminMiddleware, async (req, res) => {
         const { id } = req.params;
-        const prodByID = await productDb.getById(Number(id))
-        if (prodByID) {
-            const { title, price, thumbnail } = req.body;
-            prodByID.title = title
-            prodByID.price = price
-            prodByID.thumbnail = thumbnail
-            await productDb.saveById(prodByID)
-            const response = prodByID
-                ? { status: "Producto modificado correctamente", code: 200, data: prodByID }
-                : { status: "No se pudo modificar el producto", code: 404, data: null };
-            res.status(response.code).send(response);
+        const prodToUpdate = await productDb.getById(Number(id))
+        if (prodToUpdate) {
+            const { nombre, desc, codigo, precio, stock, foto } = req.body;
+            prodToUpdate.nombre = nombre;
+            prodToUpdate.desc = desc;
+            prodToUpdate.codigo = codigo;
+            prodToUpdate.precio = precio;
+            prodToUpdate.stock = stock;
+            prodToUpdate.foto = foto;
+            await productDb.saveById(prodToUpdate)
+            const response = prodToUpdate
+                ? { status: "Producto modificado correctamente", code: 200, data: prodToUpdate }
+                : { status: "No se pudo modificar el producto", code: 404, data: prodToUpdate };
+            res.status(response.code).json(response);
         }
         else {
-            res.status(404).send("Producto no encontrado");
+            res.status(404).json("Producto no encontrado");
         }
     })
     // DELETE api/productos/:id
-    .delete(async (req, res) => {
+    .delete(checkIfAdminMiddleware, async (req, res) => {
         const { id } = req.params;
-        const prodByID = await productDb.deleteById(Number(id))
-        const response = prodByID
-            ? { status: "Producto eliminado correctamente", code: 200, data: prodByID }
-            : { status: "No se pudo eliminar el producto", code: 404, data: null };
-        res.status(response.code).send(response);
+        const prodToDelete = await productDb.deleteById(Number(id))
+        const response = prodToDelete
+            ? { status: "Producto eliminado correctamente", code: 200, data: prodToDelete }
+            : { status: "No se pudo eliminar el producto", code: 404, data: prodToDelete };
+        res.status(response.code).json(response);
     });
 
 export default router;

@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "timestamp": 1671486583623,
+    "nombre": "Regla",
+    "desc": "Regla",
+    "codigo": "REGL",
+    "precio": "500",
+    "foto": "http://localhost:8080/images/regla.jpg",
+    "stock": "523"
+  },
+  {
+    "id": 2,
+    "timestamp": 1671486583623,
+    "nombre": "Birome",
+    "desc": "Birome",
+    "codigo": "BIRO",
+    "precio": "460",
+    "foto": "http://localhost:8080/images/birome.jpg",
+    "stock": "871"
+  },
+  {
+    "id": 3,
+    "timestamp": 1671486583623,
+    "nombre": "Mochila",
+    "desc": "Mochila",
+    "codigo": "MOCH",
+    "precio": "2642",
+    "foto": "http://localhost:8080/images/mochila.jpg",
+    "stock": "656"
+  },
+  {
+    "id": 4,
+    "timestamp": 1671486583623,
+    "nombre": "Cuaderno",
+    "desc": "Cuaderno",
+    "codigo": "CUAD",
+    "precio": "1030",
+    "foto": "http://localhost:8080/images/cuaderno.jpg",
+    "stock": "457"
+  },
+  {
+    "id": 5,
+    "timestamp": 1671486583623,
+    "nombre": "Lápiz",
+    "desc": "Lápiz",
+    "codigo": "LAPI",
+    "precio": "320",
+    "foto": "http://localhost:8080/images/lapiz.jpg",
+    "stock": "355"
+  },
+  {
+    "id": 6,
+    "timestamp": 1671486583623,
+    "nombre": "Calculadora",
+    "desc": "Calculadora",
+    "codigo": "CALC",
+    "precio": "2100",
+    "foto": "http://localhost:8080/images/calculadora.jpg",
+    "stock": "421"
+  }
+]

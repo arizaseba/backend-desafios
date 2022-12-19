@@ -5,7 +5,7 @@ const router = Router();
 router.route("/")
     // GET
     .get((req, res) => {
-        res.render("productForm.ejs")
+        res.render("index.ejs")
     })
 
 export default router; 

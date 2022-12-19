@@ -1,48 +1,60 @@
 const socket = io();
 
 //#region Productos
-const productForm = document.getElementById("productForm");
-const titleInput = document.getElementById("titleInput");
-const priceInput = document.getElementById("priceInput");
-const thumbnailInput = document.getElementById("thumbnailInput");
-const productsPool = document.getElementById("productsPool");
+// const productForm = document.getElementById("productForm");
+// const nombreInput = document.getElementById("nombreInput");
+// const descInput = document.getElementById("descInput");
+// const codigoInput = document.getElementById("codigoInput");
+// const precioInput = document.getElementById("precioInput");
+// const stockInput = document.getElementById("stockInput");
+// const fotoInput = document.getElementById("fotoInput");
+// const productsPool = document.getElementById("productsPool");
 
-const sendProduct = (productInfo) => {
-    socket.emit("client:product", productInfo);
-};
+// const sendProduct = (productInfo) => {
+//     socket.emit("client:product", productInfo);
+// };
 
-const renderProduct = (productsData) => {
-    const html = productsData.map(productInfo => {
-        return `<tr>
-                    <td>${productInfo.title}</td>
-                    <td>${productInfo.price}</td>
-                    <td><img style="height:100px" src="${productInfo.thumbnail}"/></td>
-                </tr>`;
-    });
-    // console.log("Arreglo de string de productos", html);
-    // console.log("String de productos", html.join(" "));
-    productsPool.innerHTML = html.join("");
-};
+// const renderProduct = (productsData) => {
+//     const html = productsData.map(productInfo => {
+//         return `<tr>
+//                     <td>${productInfo.nombre}</td>
+//                     <td>${productInfo.precio}</td>
+//                     <td>
+//                         <img style="height:100px" src="${productInfo.foto}"/>
+//                     </td>
+//                 </tr>`;
+//     });
+//     // console.log("Arreglo de string de productos", html);
+//     // console.log("String de productos", html.join(" "));
+//     productsPool.innerHTML = html.join("");
+// };
 
-const submitHandler = (event) => {
-    event.preventDefault();
+// const submitHandler = (event) => {
+//     event.preventDefault();
 
-    const productInfo = {
-        title: titleInput.value,
-        price: priceInput.value,
-        thumbnail: thumbnailInput.value
-    };
+//     const productInfo = new Producto(
+//         Date.now(),
+//         nombreInput.value,
+//         descInput.value,
+//         codigoInput.value,
+//         fotoInput.value,
+//         precioInput.value,
+//         stockInput.value
+//     );
 
-    sendProduct(productInfo);
+//     sendProduct(productInfo);
 
-    titleInput.value = "";
-    priceInput.value = "";
-    thumbnailInput.value = "";
-};
+//     // nombreInput.value = "";
+//     // descInput.value = "";
+//     // codigoInput.value = "";
+//     // precioInput.value = "";
+//     // fotoInput.value = "";
+//     // stockInput.value = "";
+// };
 
-productForm.addEventListener("submit", submitHandler);
+// productForm.addEventListener("submit", submitHandler);
 
-socket.on("server:product", renderProduct);
+// socket.on("server:product", renderProduct);
 //#endregion
 
 //#region Mensajes

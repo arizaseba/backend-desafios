@@ -1,6 +1,6 @@
 import fs from "fs"
 
-class MensajeRepository {
+class ProductoRepository {
     // constructor que recibe nombre del archivo
     constructor(fileName) {
         this.fileName = fileName
@@ -13,6 +13,10 @@ class MensajeRepository {
     async save(obj) {
         const list = await this.getAll();
         let id;
+
+        if (list.length > 0 && list.some((s) => s.nombre === obj.nombre)) {
+            return console.log("El producto ya se encuentra en el catálogo");
+        }
 
         if (list.length == 0) {
             id = 1
@@ -77,7 +81,7 @@ class MensajeRepository {
     async getAll() {
         try {
             const data = await fs.promises.readFile(this.fileName, "utf-8")
-            return JSON.parse(data)
+            return data ? JSON.parse(data) : []
         }
         catch (err) {
             console.error(err)
@@ -110,5 +114,5 @@ class MensajeRepository {
     }
 }
 
-const mensajeRepository = new MensajeRepository("./db/mensajes.txt")
-export default mensajeRepository;
+const productoRepository = new ProductoRepository("./src/database/productos.txt")
+export default productoRepository;
