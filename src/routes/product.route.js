@@ -16,9 +16,9 @@ router
     })
     // POST api/productos
     .post(uploadFileMiddleware.single("foto"), checkIfAdminMiddleware, async (req, res) => {
-        const { nombre, desc, codigo, precio, stock } = req.body;
-        const foto = req.file.originalname;
-        const prodNew = new Product(nombre, desc, codigo, `http://localhost:8080/images/${foto}`, precio, stock);
+        const { nombre, desc, codigo, precio, stock, foto } = req.body;
+        const img = req.file?.originalname ? `http://localhost:8080/images/${req.file.originalname}` : `http://localhost:8080/images/${foto}`;
+        const prodNew = new Product(nombre, desc, codigo, img, precio, stock);
         const prodNewId = await productDb.save(prodNew);
 
         const prodByID = await productDb.getById(prodNewId);
@@ -26,8 +26,8 @@ router
             ? { status: "Producto agregado correctamente", code: 201, data: prodByID }
             : { status: "No se pudo agregar el producto", code: 404, data: null };
 
-        // res.status(response.code).send(response);
-        res.status(response.code).redirect("/")
+        res.status(response.code).json(response);
+        // res.status(response.code).redirect("/")
     });
 
 router

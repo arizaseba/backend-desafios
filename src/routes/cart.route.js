@@ -10,13 +10,13 @@ router
     .route("/")
     // GET /api/carrito
     .get(async (req, res) => {
-        const carrito = await carritoDb.getAll()
-        res.json(carrito)
+        const cart = await carritoDb.getAll()
+        res.json(cart)
     })
     // POST api/carrito
     .post(checkIfAdminMiddleware, async (req, res) => {
-        const carritoNewId = await carritoDb.save(new Cart());
-        res.json(carritoNewId)
+        const newCart = await carritoDb.save(new Cart());
+        res.json(newCart)
     });
 
 router
@@ -24,10 +24,10 @@ router
     // DELETE api/carrito/:id
     .delete(checkIfAdminMiddleware, async (req, res) => {
         const { id } = req.params;
-        const carritoToDelete = await carritoDb.deleteById(Number(id))
-        const response = carritoToDelete
-            ? { status: "Producto eliminado correctamente", code: 200, data: carritoToDelete }
-            : { status: "No se pudo eliminar el producto", code: 404, data: carritoToDelete };
+        const cartToDelete = await carritoDb.deleteById(Number(id))
+        const response = cartToDelete
+            ? { status: "Producto eliminado correctamente", code: 200, data: cartToDelete }
+            : { status: "No se pudo eliminar el producto", code: 404, data: cartToDelete };
         res.status(response.code).json(response);
     });
 
@@ -36,8 +36,8 @@ router
     // GET api/carrito/:id/productos
     .get(async (req, res) => {
         const { id } = req.params;
-        const carrito = await carritoDb.getById(Number(id));
-        res.json(carrito.productos)
+        const cart = await carritoDb.getById(Number(id));
+        res.json(cart.productos)
     });
 
 router
@@ -46,34 +46,34 @@ router
     .post(checkIfAdminMiddleware, async (req, res) => {
         const { id, id_prod } = req.params;
         // busco el carrito a actualizar
-        const carritoToUpdate = await carritoDb.getById(Number(id));
+        const cartToUpdate = await carritoDb.getById(Number(id));
         // busco el producto a agregar
         const prodByID = await productDb.getById(Number(id_prod));
         // agrego el producto al objeto
         let cantidad = 1
-        const item = carritoToUpdate.productos.find(item => item.id === prodByID.id)
+        const item = cartToUpdate.productos.find(item => item.id === prodByID.id)
         if (!item) {
             const newItem = { ...prodByID, cantidad }
-            carritoToUpdate.productos.push(newItem)
+            cartToUpdate.productos.push(newItem)
         }
         else {
             item.cantidad++
         }
         
         // agrego el producto a la db
-        const carrito = await carritoDb.saveById(carritoToUpdate)
-        res.json(carrito)
+        const cart = await carritoDb.saveById(cartToUpdate)
+        res.json(cart)
     })
     // DELETE api/carrito/:id/productos/:id_prod
     .delete(checkIfAdminMiddleware, async (req, res) => {
         const { id, id_prod } = req.params;
         // busco el carrito a actualizar
-        const carritoToUpdate = await carritoDb.getById(Number(id));
+        const cartToUpdate = await carritoDb.getById(Number(id));
         // elimino el producto del carrito
-        carritoToUpdate.productos = carritoToUpdate.productos.filter(item => item.id !== Number(id_prod))
+        cartToUpdate.productos = cartToUpdate.productos.filter(item => item.id !== Number(id_prod))
         // agrego el producto a la db
-        const carrito = await carritoDb.saveById(carritoToUpdate)
-        res.json(carrito)
+        const cart = await carritoDb.saveById(cartToUpdate)
+        res.json(cart)
     });
 
 export default router;

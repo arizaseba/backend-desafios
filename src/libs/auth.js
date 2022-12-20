@@ -1,5 +1,5 @@
 const checkIfAdminMiddleware = (req, res, next) => {
-    const ADMIN = false;
+    const ADMIN = true;
     //  const userType = req.header("userType")
     // userType === ADMIN
     ADMIN
