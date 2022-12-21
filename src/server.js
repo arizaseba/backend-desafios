@@ -6,7 +6,8 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import path from "path";
 import { Server as IOServer } from "socket.io";
-import messageDB from './repositories/MessageRepository.js'
+import MessageRepository from './repositories/MessageRepository.js'
+import ProductRepository from './repositories/ProductRepository.js'
 
 // settings
 const app = express();
@@ -15,10 +16,10 @@ const PORT = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// middlewares
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use("/images", express.static(path.join(__dirname, "/uploads")));
+app.use(express.static(__dirname + "/public"));
 
 // routes
 app.use("/api/productos", productRoute)
@@ -43,18 +44,23 @@ const expressServer = app.listen(PORT, (error) => {
 
 const io = new IOServer(expressServer);
 
-app.use(express.static(__dirname + "/public"));
-
 io.on("connection", async (socket) => {
     console.log(`New connection, socket ID: ${socket.id}`);
 
-    // mensajes
-    const msgs = await messageDB.getAll();
-    socket.emit("server:msg", msgs);
+    socket.emit("server:message", await MessageRepository.getAll());
+    // socket.emit("server:product", await ProductRepository.getAll());
 
-    socket.on("client:msg", (msgInfo) => {
-        messageDB.save(msgInfo)
-        msgs.push(msgInfo)
-        io.emit("server:msg", msgs);
+    socket.on("client:message", async (messageInfo) => {
+        await MessageRepository.save(messageInfo);
+        io.emit("server:message", await MessageRepository.getAll());
     });
+
+    socket.on("client:product", async (productInfo) => {
+        await ProductRepository.save(productInfo);
+        io.emit("server:product", await ProductRepository.getAll());
+    });
+});
+
+app.on("error", (err) => {
+    console.log(err);
 });

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Product from "../models/Product.js";
-import productDb from "../repositories/ProductRepository.js"
+import ProductRepository from "../repositories/ProductRepository.js"
 import uploadFileMiddleware from "../libs/multer.js";
 import checkIfAdminMiddleware from "../libs/auth.js";
 
@@ -10,7 +10,7 @@ router
     .route("/")
     // GET /api/productos
     .get(async (req, res) => {
-        const products = await productDb.getAll()
+        const products = await ProductRepository.getAll()
         // res.json(products)
         res.render("products.ejs", { products })
     })

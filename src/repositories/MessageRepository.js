@@ -1,114 +1,87 @@
-import fs from "fs"
+import knex from "knex";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import path from "path";
 
-class MensajeRepository {
-    // constructor que recibe nombre del archivo
-    constructor(fileName) {
-        this.fileName = fileName
-
-        if (!fs.existsSync(this.fileName))
-            fs.writeFileSync(fileName, "")
+class MessageRepository {
+    constructor(databaseConfig, tableName) {
+        this.database = knex(databaseConfig);
+        this.table = tableName;
     }
 
-    // guardar elemento
-    async save(obj) {
-        const list = await this.getAll();
-        let id;
-
-        if (list.length == 0) {
-            id = 1
-        }
-        else {
-            list.sort((a, b) => { return a.id - b.id })
-            id = list[list.length - 1].id + 1
-        }
-
-        // asigno nuevo id
-        const newObj = { id: id, ...obj }
-        // agrego al listado
-        list.push(newObj);
-
+    async save(document) {
         try {
-            await fs.promises.writeFile(this.fileName, JSON.stringify(list, null, 2))
-            return id
-        }
-        catch (err) {
-            throw new Error(`Error al guardar un nuevo objeto: ${err}`)
+            const response = await this.database(this.table).insert(document);
+
+            return response;
+        } catch (err) {
+            console.log(err);
         }
     }
 
-    // modificar elemento
-    async saveById(obj) {
-        const list = await this.getAll()
-        const prodToUpdate = list.find(item => item.id === obj.id)
+    async replace(id, document) {
+        try {
+            const response = await this.database(this.table)
+                .where({ id })
+                .update(document);
 
-        if (prodToUpdate) {
-            let id = prodToUpdate.id
-            await this.deleteById(id)
-            const newList = list.filter(item => item.id !== id)
-            const newObj = { id: id, ...obj }
-            // agrego al listado
-            newList.push(newObj)
-            newList.sort((a, b) => { return a.id - b.id })
-
-            try {
-                await fs.promises.writeFile(this.fileName, JSON.stringify(newList, null, 2))
-                return id
-            }
-            catch (err) {
-                throw new Error(`Error al guardar un nuevo objeto: ${err}`)
-            }
+            return response;
+        } catch (err) {
+            throw new Error(`error: documento no encontrado`);
         }
-        else
-            throw new Error(`Error al guardar un nuevo objeto: ${err}`)
     }
 
-    // obtener elemento
     async getById(id) {
         try {
-            const list = await this.getAll()
-            return list.find(item => item.id === id) ?? null
-        }
-        catch (err) {
-            throw new Error(`No se encontro el dato: ${err}`)
+            const response = await this.database
+                .from(this.table)
+                .select("*")
+                .where({ id });
+
+            return response;
+        } catch (err) {
+            throw new Error(`No se encuentra el documento con id: ${err}`);
         }
     }
 
-    // obtener elementos
     async getAll() {
         try {
-            const data = await fs.promises.readFile(this.fileName, "utf-8")
-            return data ? JSON.parse(data) : []
-        }
-        catch (err) {
-            console.error(err)
-            return []
+            const response = await this.database.from(this.table).select("*");
+            return response;
+        } catch {
+            return { error: "producto no encontrado" };
         }
     }
 
-    // eliminar elemento por id
     async deleteById(id) {
-        const list = await this.getAll()
-        const prodToDelete = await this.getById(id)
-        const newList = list.filter(item => item.id !== id)
         try {
-            await fs.promises.writeFile(this.fileName, JSON.stringify(newList, null, 2))
-            return prodToDelete
-        }
-        catch (err) {
-            throw new Error(`No se pudo borrar la data: ${err}`)
+            await this.database(this.table).del().where({ id });
+
+            return true;
+        } catch (err) {
+            throw new Error(`Error al borrar data: ${err}`);
         }
     }
 
-    // eliminar elementos
     async deleteAll() {
         try {
-            await fs.promises.writeFile(this.fileName, JSON.stringify([], null, 2))
-        }
-        catch (err) {
-            throw new Error(`No se pudo borrar la data: ${err}`)
+            await this.database(this.table).del();
+        } catch (err) {
+            throw new Error(`Error al escribir: ${err}`);
         }
     }
 }
 
-const mensajeRepository = new MensajeRepository("./src/database/mensajes.txt")
-export default mensajeRepository;
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const messageRepository = new MessageRepository(
+    {
+        client: "sqlite3",
+        connection: {
+            filename: path.resolve(__dirname, "../database/ecommerce.sqlite"),
+        },
+        useNullAsDefault: true,
+    },
+    "message"
+);
+export default messageRepository;

@@ -1,60 +1,60 @@
 const socket = io();
 
 //#region Productos
-// const productForm = document.getElementById("productForm");
-// const nombreInput = document.getElementById("nombreInput");
-// const descInput = document.getElementById("descInput");
-// const codigoInput = document.getElementById("codigoInput");
-// const precioInput = document.getElementById("precioInput");
-// const stockInput = document.getElementById("stockInput");
-// const fotoInput = document.getElementById("fotoInput");
-// const productsPool = document.getElementById("productsPool");
+const productForm = document.getElementById("productForm");
+const nombreInput = document.getElementById("nombreInput");
+const descInput = document.getElementById("descInput");
+const codigoInput = document.getElementById("codigoInput");
+const precioInput = document.getElementById("precioInput");
+const stockInput = document.getElementById("stockInput");
+const fotoInput = document.getElementById("fotoInput");
+const productsPool = document.getElementById("productsPool");
 
-// const sendProduct = (productInfo) => {
-//     socket.emit("client:product", productInfo);
-// };
+const sendProduct = (productInfo) => {
+    socket.emit("client:product", productInfo);
+};
 
-// const renderProduct = (productsData) => {
-//     const html = productsData.map(productInfo => {
-//         return `<tr>
-//                     <td>${productInfo.nombre}</td>
-//                     <td>${productInfo.precio}</td>
-//                     <td>
-//                         <img style="height:100px" src="${productInfo.foto}"/>
-//                     </td>
-//                 </tr>`;
-//     });
-//     // console.log("Arreglo de string de productos", html);
-//     // console.log("String de productos", html.join(" "));
-//     productsPool.innerHTML = html.join("");
-// };
+const renderProduct = (productsData) => {
+    const html = productsData.map(productInfo => {
+        return `<tr>
+                    <td>${productInfo.nombre}</td>
+                    <td>${productInfo.precio}</td>
+                    <td>
+                        <img style="height:100px" src="${productInfo.foto}"/>
+                    </td>
+                </tr>`;
+    });
+    // console.log("Arreglo de string de productos", html);
+    // console.log("String de productos", html.join(" "));
+    productsPool.innerHTML = html.join("");
+};
 
-// const submitHandler = (event) => {
-//     event.preventDefault();
+const submitHandler = (event) => {
+    event.preventDefault();
 
-//     const productInfo = new Producto(
-//         Date.now(),
-//         nombreInput.value,
-//         descInput.value,
-//         codigoInput.value,
-//         fotoInput.value,
-//         precioInput.value,
-//         stockInput.value
-//     );
+    const productInfo = {
+        timestamp: Date.now(),
+        nombre: nombreInput.value,
+        desc: descInput.value,
+        codigo: codigoInput.value,
+        foto: fotoInput.value,
+        precio: precioInput.value,
+        stock: stockInput.value
+    };
 
-//     sendProduct(productInfo);
+    sendProduct(productInfo);
 
-//     // nombreInput.value = "";
-//     // descInput.value = "";
-//     // codigoInput.value = "";
-//     // precioInput.value = "";
-//     // fotoInput.value = "";
-//     // stockInput.value = "";
-// };
+    nombreInput.value = "";
+    descInput.value = "";
+    codigoInput.value = "";
+    precioInput.value = "";
+    fotoInput.value = "";
+    stockInput.value = "";
+};
 
-// productForm.addEventListener("submit", submitHandler);
+productForm.addEventListener("submit", submitHandler);
 
-// socket.on("server:product", renderProduct);
+socket.on("server:product", renderProduct);
 //#endregion
 
 //#region Mensajes
@@ -64,7 +64,7 @@ const msgInput = document.getElementById("msgInput");
 const msgPool = document.getElementById("msgPool");
 
 const sendMsg = (msgInfo) => {
-    socket.emit("client:msg", msgInfo);
+    socket.emit("client:message", msgInfo);
 };
 
 const renderMsg = (msgsData) => {
@@ -79,11 +79,10 @@ const renderMsg = (msgsData) => {
 const submitHandlerMsg = (event) => {
     event.preventDefault();
 
-    const date = new Date()
     const msgInfo = {
+        date: Date.now(),
         email: emailInput.value,
         msg: msgInput.value,
-        date: date.toLocaleString()
     };
 
     sendMsg(msgInfo);
@@ -94,5 +93,5 @@ const submitHandlerMsg = (event) => {
 
 msgForm.addEventListener("submit", submitHandlerMsg);
 
-socket.on("server:msg", renderMsg);
+socket.on("server:message", renderMsg);
 //#endregion
