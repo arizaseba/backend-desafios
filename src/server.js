@@ -48,7 +48,7 @@ io.on("connection", async (socket) => {
     console.log(`New connection, socket ID: ${socket.id}`);
 
     socket.emit("server:message", await MessageRepository.getAll());
-    // socket.emit("server:product", await ProductRepository.getAll());
+    socket.emit("server:product", await ProductRepository.getAll());
 
     socket.on("client:message", async (messageInfo) => {
         await MessageRepository.save(messageInfo);
